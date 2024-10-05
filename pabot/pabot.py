@@ -466,7 +466,7 @@ def _run(command, stderr, stdout, item_name, verbose, pool_id, item_index):
         cmd = cmd.decode("utf-8").encode(SYSTEM_ENCODING)
     # avoid hitting https://bugs.python.org/issue10394
     with POPEN_LOCK:
-        process = subprocess.Popen(cmd, shell=True, stderr=stderr, stdout=stdout)
+        process = subprocess.Popen(cmd, shell=False, stderr=stderr, stdout=stdout)
     if verbose:
         _write_with_id(
             process,
@@ -1470,8 +1470,7 @@ def _start_remote_library(pabot_args):  # type: (dict) -> Optional[subprocess.Po
             pabotlibhost=pabot_args["pabotlibhost"],
             pabotlibport=free_port,
         ),
-        shell=True,
-    )
+        shell=False)
 
 
 def _stop_remote_library(process):  # type: (subprocess.Popen) -> None
