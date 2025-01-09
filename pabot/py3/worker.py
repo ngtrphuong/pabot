@@ -29,8 +29,7 @@ def working(hive_address: str):
                 with tempfile.TemporaryDirectory() as dirpath:
                     # FIXME:Actual command should be created here
                     with subprocess.Popen(
-                        cmd.replace("%OUTPUTDIR%", dirpath), shell=True
-                    ) as process:
+                        cmd.replace("%OUTPUTDIR%", dirpath), shell=False) as process:
                         process.wait()
                     with tarfile.open("TarName.tar.gz", "w:gz") as tar:
                         tar.add(dirpath, arcname=".")
