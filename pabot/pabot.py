@@ -71,7 +71,6 @@ from __future__ import absolute_import, print_function
 import datetime
 import hashlib
 import os
-import random
 import re
 import shutil
 import signal
@@ -115,6 +114,7 @@ from .execution_items import (
     TestItem,
 )
 from .result_merger import merge
+import secrets
 
 try:
     import queue  # type: ignore
@@ -1594,7 +1594,7 @@ def _create_execution_items_for_run(
             options.get("randomize") in ["all", "suites"]
             and "suitesfrom" not in pabot_args
         ):
-            random.shuffle(suite_group)
+            secrets.SystemRandom().shuffle(suite_group)
         items = _create_items(
             datasources, opts_for_run, outs_dir, pabot_args, suite_group
         )
