@@ -7,6 +7,7 @@ import tempfile
 import uuid
 
 from . import messages
+from security import safe_command
 
 
 def working(hive_address: str):
@@ -28,8 +29,7 @@ def working(hive_address: str):
                 cmd = msg.data
                 with tempfile.TemporaryDirectory() as dirpath:
                     # FIXME:Actual command should be created here
-                    with subprocess.Popen(
-                        cmd.replace("%OUTPUTDIR%", dirpath), shell=True
+                    with safe_command.run(subprocess.Popen, cmd.replace("%OUTPUTDIR%", dirpath), shell=True
                     ) as process:
                         process.wait()
                     with tarfile.open("TarName.tar.gz", "w:gz") as tar:
