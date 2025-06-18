@@ -115,6 +115,7 @@ from .execution_items import (
     TestItem,
 )
 from .result_merger import merge
+from security import safe_command
 
 try:
     import queue  # type: ignore
@@ -466,7 +467,7 @@ def _run(command, stderr, stdout, item_name, verbose, pool_id, item_index):
         cmd = cmd.decode("utf-8").encode(SYSTEM_ENCODING)
     # avoid hitting https://bugs.python.org/issue10394
     with POPEN_LOCK:
-        process = subprocess.Popen(cmd, shell=True, stderr=stderr, stdout=stdout)
+        process = safe_command.run(subprocess.Popen, cmd, shell=True, stderr=stderr, stdout=stdout)
     if verbose:
         _write_with_id(
             process,
@@ -1462,8 +1463,7 @@ def _start_remote_library(pabot_args):  # type: (dict) -> Optional[subprocess.Po
             Color.YELLOW,
         )
         pabot_args["resourcefile"] = None
-    return subprocess.Popen(
-        '"{python}" -m {pabotlibname} {resourcefile} {pabotlibhost} {pabotlibport}'.format(
+    return safe_command.run(subprocess.Popen, '"{python}" -m {pabotlibname} {resourcefile} {pabotlibhost} {pabotlibport}'.format(
             python=sys.executable,
             pabotlibname=pabotlib.__name__,
             resourcefile=pabot_args.get("resourcefile"),
